@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   postgres-db:
@@ -7,8 +6,8 @@ services:
     ports:
       - "5432:5432" # Mapowanie portu: TwójKomputer:Kontener
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: mtab_db
     volumes:
     - postgres_data:/var/lib/postgresql/data # Aby dane przetrwały restart kontenera
