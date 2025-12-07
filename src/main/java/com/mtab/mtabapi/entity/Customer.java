@@ -24,4 +24,9 @@ public class Customer {
     @Column(nullable = false)
     private String emailAddress;
 
+    public Customer(String name, String surname, String emailAddress) {
+        this.name = name;
+        this.surname = surname;
+        this.emailAddress = emailAddress;
+    }
 }
