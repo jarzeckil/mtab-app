@@ -9,4 +9,43 @@ GET http://localhost:8080/items/3
 ###
 GET http://localhost:8080/items/2137
 
-#TODO test POST
+###
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+  "customerId": 3,
+  "items": [
+    {
+      "itemId": 2,
+      "quantity": 2
+    },
+    {
+      "itemId": 3,
+      "quantity": 1
+    }
+  ]
+}
+
+###
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": -1
+    }
+  ]
+}
+
+###
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "items": []
+}
