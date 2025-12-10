@@ -2,6 +2,7 @@ package com.mtab.mtabapi.controller;
 
 import com.mtab.mtabapi.dto.OrderRequest;
 import com.mtab.mtabapi.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Long> createOrder(@RequestBody OrderRequest orderRequest) {
+    public ResponseEntity<Long> createOrder(@Valid @RequestBody OrderRequest orderRequest) {
 
         log.info("Received POST order request: {}", orderRequest);
 
@@ -26,10 +27,4 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleException(IllegalArgumentException e){
-        log.warn("Error while validating order: {}", e.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
 }
