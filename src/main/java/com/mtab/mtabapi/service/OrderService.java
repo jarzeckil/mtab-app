@@ -40,10 +40,6 @@ public class OrderService {
         order.setCustomer(customer);
         order.setOrderDate(LocalDateTime.now());
 
-        // Check if order is not empty
-        if(orderRequest.getItems().isEmpty()) {
-            throw new IllegalArgumentException("Order must contain at least one item!");
-        }
 
         for (OrderItemRequest orderItemRequest : orderRequest.getItems()) {
             // Check if item exists

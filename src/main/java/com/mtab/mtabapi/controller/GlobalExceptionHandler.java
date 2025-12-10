@@ -16,11 +16,13 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
+        log.warn("Error while validating input data");
+
         Map<String, String> errors = new HashMap<>();
 
         // Wyciągamy błędy z wyjątku i pakujemy do mapy
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        e.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -30,9 +32,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleException(IllegalArgumentException e){
-        log.warn("Error while validating order: {}", e.getMessage());
+    public ResponseEntity<Map<String, String>> handleException(IllegalArgumentException e){
+        log.warn("Error while handling data");
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        Map<String, String> error = new HashMap<>();
+        error.put("Error: not found", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }
