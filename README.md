@@ -70,6 +70,18 @@ This project uses Docker to orchestrate the PostgreSQL database. This allows you
     ./mvnw spring-boot:run
     ```
 
+## 🖥️ API Dashboard (Basic UI)
+
+The application includes a lightweight frontend client for testing API endpoints directly in the browser, eliminating the need for external tools like Postman for basic flows.
+
+- **URL:** [http://localhost:8080](http://localhost:8080)
+- **Source:** `src/main/resources/static/index.html`
+
+### Features
+* **📦 Items Browser:** View all items, filter by `Category ID`, or lookup by `Item ID`. Data is presented in formatted tables instead of raw JSON.
+* **🛒 Order Placement:** A user-friendly form to create orders. Includes dynamic fields for adding/removing items and inputs for `Client ID` and quantity.
+* **🚦 Visual Feedback:** Handles HTTP responses gracefully, displaying success messages or color-coded error alerts (e.g., 400 Bad Request validation errors, 404 Not Found).
+
 The server will start on port `8080`.
 
 *Note: The application includes a `DataSeeder` that will automatically populate the database with sample products and customers upon the first launch.*
