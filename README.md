@@ -13,20 +13,21 @@ This project demonstrates a clean architecture approach using **Java** and **Spr
 
 ## 🚀 Key Features
 
-### Core Business Logic
+### 🐳 Containerization & Infrastructure (Docker First)
+* **Fully Containerized Ecosystem:** The entire application stack (API + PostgreSQL Database) is orchestrated via **Docker Compose**.
+* **One-Command Setup:** Eliminates "works on my machine" issues. A single `docker-compose up` command builds the Java application (using multi-stage Docker builds) and provisions the database, making the project strictly **production-ready**.
+* **Isolated Environment:** The application runs in a lightweight, consistent Linux-based container environment, independent of the host OS configuration.
+
+### ⚙️ Core Business Logic
 * **Transactional Order Processing:** Implements atomic operations using `@Transactional` to ensure that orders and their line items are persisted together or rolled back entirely in case of failure.
 * **Historical Price Freezing:** Solves the classic e-commerce problem of changing catalog prices. The system snapshots the price of an item at the moment of purchase, preserving the order history integrity.
 * **Advanced ORM:** Utilizes Hibernate/JPA for complex entity mapping, including `OneToMany` and bidirectional relationships.
 
-### Quality Assurance & Security
-* **Robust Input Validation:** Utilizes `Jakarta Validation` (Hibernate Validator) to ensure data integrity at the controller entry point. Protects the API from invalid IDs, negative quantities, or malformed requests before they reach business logic.
-* **Centralized Exception Handling:** Implements `@RestControllerAdvice` to transform uncaught exceptions and validation errors into standardized, user-friendly JSON error responses (avoiding raw stack traces in responses).
-* **Unit Testing:** Business logic is verified using **JUnit 5** and **Mockito**, ensuring service methods handle edge cases (like missing customers or products) correctly in isolation.
-
-### DevOps & Infrastructure
-* **Containerized Environment:** Fully dockerized database setup. The `docker-compose.yaml` configuration ensures a consistent development environment identical to production, eliminating "works on my machine" issues.
-* **CI/CD Pipeline:** Integrated **GitHub Actions** workflow that automatically compiles the code and runs the test suite on every push to the main branch, ensuring code quality and build stability.
-* **Automated Documentation:** Integrated **Swagger/OpenAPI** for real-time API exploration.
+### 🛡️ Quality Assurance & Security
+* **Robust Input Validation:** Utilizes `Jakarta Validation` to protect the API from invalid IDs, negative quantities, or malformed requests before they reach business logic.
+* **Centralized Exception Handling:** Implements `@RestControllerAdvice` to transform uncaught exceptions into standardized, user-friendly JSON error responses.
+* **Automated CI Pipeline:** Integrated **GitHub Actions** workflow that automatically builds the Docker image and runs unit tests on every push, ensuring code quality and build stability.
+* **Interactive Documentation:** Integrated **Swagger/OpenAPI** (accessible via the containerized app) for real-time API exploration and testing.
 
 ## 🛠️ Tech Stack
 
@@ -50,14 +51,11 @@ The system is built around a normalized relational database schema consisting of
 ## 📦 Getting Started
 
 ### Prerequisites
-* Docker & Docker Compose
-* Java JDK 17 or higher
-* Maven (optional, wrapper included)
+* **Recommended:** Docker & Docker Compose (That's it! Java/Maven are NOT required for the Docker setup).
+* **For Local Dev:** Java JDK 21 and Maven (Only if you want to run the app outside Docker).
 
-### Why Docker?
-This project uses Docker to orchestrate the PostgreSQL database. This allows you to run the application without installing and configuring a local database server manually. It guarantees that the database version and configuration match the application's requirements perfectly.
-
-### Installation
+### 🐳 Option 1: Quick Start (Docker - Recommended)
+The entire environment (Application + Database) is containerized. This ensures the app runs exactly as intended, regardless of your local OS.
 
 1.  **Clone the repository**
     ```bash
@@ -65,14 +63,29 @@ This project uses Docker to orchestrate the PostgreSQL database. This allows you
     cd ecommerce-api
     ```
 
-2.  **Start the Infrastructure**
-    Launch the PostgreSQL database container:
+2.  **Run with Docker Compose**
+    This command compiles the code, builds the Docker image, and starts both the API and the Database.
     ```bash
-    docker compose up -d
+    docker-compose up --build
+    ```
+    *Wait until you see `Started MtabApiApplication` in the logs.*
+
+3.  **Access the Application**
+    * **Frontend UI:** [http://localhost:8080](http://localhost:8080)
+    * **Swagger Docs:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+    * **Database:** Port `5432` is exposed for local tools (User/Pass: `postgres`/`postgres`).
+
+---
+
+### 🔧 Option 2: Local Development (Hybrid)
+Use this method if you want to debug the Java code in your IDE while keeping the database in Docker.
+
+1.  **Start only the Database**
+    ```bash
+    docker-compose up postgres-db -d
     ```
 
-3.  **Run the Application**
-    Build and start the Spring Boot server:
+2.  **Run the App locally**
     ```bash
     ./mvnw spring-boot:run
     ```
@@ -148,9 +161,11 @@ End-to-end integration tests are implemented using `@SpringBootTest` and an in-m
 Building this project provided deep practical insights into modern backend development:
 
 * **Spring Context & IoC:** Gained a solid understanding of Dependency Injection and how Spring manages bean lifecycles.
-* **Database Transactions:** Learned how `@Transactional` proxies work to guarantee data consistency across multiple database tables (ACID principles).
+* **Database Transactions:** Learned how `@Transactional` proxies work to guarantee data consistency (ACID) across multiple tables, specifically implementing the **historical price freezing** logic.
 * **DTO Pattern:** Understood the importance of separating database Entities from Data Transfer Objects (DTOs) for security and API versioning.
-* **Input Validation & Exception Handling:** Learned how to sanitize user input using Jakarta Validation and how to implement a global exception handler to provide clean API error responses.
-* **Docker & Containerization:** Learned how to define infrastructure as code using Docker Compose to create reproducible development environments.
-* **Testing Strategy:** Learned the difference between Unit and Integration testing and how to use Mocks to isolate components.
-* **CI/CD:** Configured a GitHub Actions pipeline to automate the build and test process, enforcing code quality standards on every commit.
+* **Input Validation & Exception Handling:** Learned how to sanitize user input using Jakarta Validation and implement a global exception handler (`@ControllerAdvice`) for clean, standardized API error responses.
+* **Docker & Infrastructure:** Learned to define Infrastructure as Code (IaC) using **Docker Compose** (including multi-stage builds) to create reproducible, production-ready environments independent of the host OS.
+* **API Documentation:** Integrated **OpenAPI (Swagger)** to automatically generate interactive documentation, improving the developer experience and testing workflow.
+* **Full-Stack Integration:** Built a lightweight frontend client using vanilla **JavaScript (Fetch API)** to consume REST endpoints, gaining insight into CORS and JSON serialization/deserialization.
+* **CI/CD & Testing:** Configured a **GitHub Actions** pipeline to automate the build and test process, enforcing code quality standards on every commit.
+* **Problem Solving:** Solved real-world compatibility issues ("Dependency Hell") between Spring Boot versions and third-party libraries by analyzing stack traces and managing Maven configurations.
